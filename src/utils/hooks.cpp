@@ -10,6 +10,7 @@
 #include "kz/timer/kz_timer.h"
 #include "utils/utils.h"
 #include "entityclass.h"
+#include "movement/mv_mappingapi.h"
 
 class GameSessionConfiguration_t
 {
@@ -117,7 +118,7 @@ void hooks::Cleanup()
 {
 	SH_REMOVE_HOOK(ISource2GameClients, ClientCommand, g_pSource2GameClients, SH_STATIC(Hook_ClientCommand), false);
 	SH_REMOVE_HOOK(ISource2Server, GameFrame, interfaces::pServer, SH_STATIC(Hook_GameFrame), false);
-	SH_REMOVE_HOOK(CEntitySystem, Spawn, GameEntitySystem(), SH_STATIC(Hook_CEntitySystem_Spawn_Post), true);
+	SH_REMOVE_HOOK(CEntitySystem, Spawn, GameEntitySystem(), SH_STATIC(Hook_CEntitySystem_Spawn), true);
 	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_STATIC(Hook_CheckTransmit), true);
 	SH_REMOVE_HOOK(ISource2GameClients, ClientActive, g_pSource2GameClients, SH_STATIC(Hook_ClientActive), false);
 	SH_REMOVE_HOOK(ISource2GameClients, ClientDisconnect, g_pSource2GameClients, SH_STATIC(Hook_ClientDisconnect), false);
@@ -196,17 +197,9 @@ void hooks::HookEntities()
 	GameEntitySystem()->AddListenerEntity(&entityListener);
 }
 
-internal void Hook_CEntitySystem_Spawn_Post(int nCount, const EntitySpawnInfo_t *pInfo_DontUse)
+internal void Hook_CEntitySystem_Spawn(int nCount, const EntitySpawnInfo_t *pInfo)
 {
-	EntitySpawnInfo_t *pInfo = (EntitySpawnInfo_t *)pInfo_DontUse;
-
-	for (i32 i = 0; i < nCount; i++)
-	{
-		if (pInfo && pInfo[i].m_pEntity)
-		{
-			// do stuff with spawning entities!
-		}
-	}
+	mappingapi::OnSpawn(nCount, pInfo);
 }
 
 internal void Hook_GameFrame(bool simulating, bool bFirstTick, bool bLastTick)
@@ -215,7 +208,7 @@ internal void Hook_GameFrame(bool simulating, bool bFirstTick, bool bLastTick)
 	static int entitySystemHook = 0;
 	if (GameEntitySystem() && !entitySystemHook)
 	{
-		entitySystemHook = SH_ADD_HOOK(CEntitySystem, Spawn, GameEntitySystem(), SH_STATIC(Hook_CEntitySystem_Spawn_Post), true);
+		entitySystemHook = SH_ADD_HOOK(CEntitySystem, Spawn, GameEntitySystem(), SH_STATIC(Hook_CEntitySystem_Spawn), false);
 	}
 	RETURN_META(MRES_IGNORED);
 }
