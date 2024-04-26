@@ -199,7 +199,7 @@ void hooks::HookEntities()
 
 internal void Hook_CEntitySystem_Spawn_Post(int nCount, const EntitySpawnInfo_t *pInfo)
 {
-	mappingapi::OnSpawnPost(nCount, pInfo);
+	g_mappingInterface.OnSpawnPost(nCount, pInfo);
 }
 
 internal void Hook_GameFrame(bool simulating, bool bFirstTick, bool bLastTick)
@@ -479,7 +479,7 @@ internal void OnStartTouchPost(CBaseEntity2 *pOther)
 	if (player && !V_stricmp(pThis->GetClassname(), "trigger_multiple"))
 	{
 		CBaseTrigger *trigger = static_cast<CBaseTrigger *>(pThis);
-		mappingapi::OnTriggerMultipleStartTouchPost(player, trigger);
+		g_mappingInterface.OnTriggerMultipleStartTouchPost(player, trigger);
 	}
 	RETURN_META(MRES_IGNORED);
 }
@@ -518,7 +518,7 @@ internal void OnEndTouchPost(CBaseEntity2 *pOther)
 	if (player && !V_stricmp(pThis->GetClassname(), "trigger_multiple"))
 	{
 		CBaseTrigger *trigger = static_cast<CBaseTrigger *>(pThis);
-		mappingapi::OnTriggerMultipleEndTouchPost(player, trigger);
+		g_mappingInterface.OnTriggerMultipleEndTouchPost(player, trigger);
 	}
 	RETURN_META(MRES_IGNORED);
 }
