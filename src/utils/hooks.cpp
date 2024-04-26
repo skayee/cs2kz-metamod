@@ -199,7 +199,7 @@ void hooks::HookEntities()
 
 internal void Hook_CEntitySystem_Spawn(int nCount, const EntitySpawnInfo_t *pInfo)
 {
-	mappingapi::OnSpawn(nCount, pInfo);
+	mappingapi::OnSpawnPost(nCount, pInfo);
 }
 
 internal void Hook_GameFrame(bool simulating, bool bFirstTick, bool bLastTick)
